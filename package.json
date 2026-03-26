@@ -1,0 +1,79 @@
+{
+  "name": "local-llm-autocomplete",
+  "displayName": "Local LLM Autocomplete",
+  "description": "Ghost-text code completion using a local LLM",
+  "version": "0.0.5",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "icon": "icon.png",
+  "activationEvents": ["onStartupFinished"],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "local-llm.triggerCompletion",
+        "title": "Local LLM: Trigger Completion"
+      }
+    ],
+    "configuration": {
+      "title": "Local LLM Autocomplete",
+      "properties": {
+        "local-llm.endpointUrl": {
+          "type": "string",
+          "default": "http://localhost:8013",
+          "description": "Base URL of your local OpenAI-compatible server. Do not include /v1/chat/completions — it is appended automatically. Examples: http://localhost:8013, https://your-ngrok-url.ngrok-free.app"
+        },
+        "local-llm.modelName": {
+          "type": "string",
+          "default": "Qwen3.5",
+          "description": "The name of the model to request."
+        },
+        "local-llm.contextFolder": {
+          "type": "string",
+          "default": ".llm-context",
+          "description": "Folder name containing extra context files."
+        },
+        "local-llm.enableAutoSuggest": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic code suggestions as you type."
+        },
+        "local-llm.autoSuggestDelay": {
+          "type": "number",
+          "default": 1000,
+          "description": "Delay in milliseconds before automatically requesting a suggestion (e.g., 1000 = 1 second)."
+        },
+        "local-llm.completionPrompt": {
+          "type": "string",
+          "default": "You are a code completion agent. Your job is to complete/predict the code that, given the rest of the code context, would logically make sense at the user's current cursor position (marked as *CURSOR POSITION*). Output the minimum necessary amount of code that would make sense in that specific area. It could be just finishing a statement, a line, or even a few lines.\n\nFind *CURSOR POSITION* in the code, and replace it with the most sensible piece of code that should go in that spot given the surrounding code context. DO NOT provide code that is already there - only new code that would make sense in that exact area. If there is no code suggestion that makes sense, just output N/A.\n\nOutput ONLY the raw code itself. Do not wrap it in a code block, do not use backticks, and do not include any explanation.\n\nCode context ({fileName}):\n\n{textBefore}*CURSOR POSITION*{textAfter}",
+          "editPresentation": "multilineText",
+          "description": "Prompt template for cursor-based completions. Available variables: {fileName}, {textBefore}, {textAfter}"
+        },
+        "local-llm.selectionPrompt": {
+          "type": "string",
+          "default": "You are a code completion agent. The user has selected a piece of code (marked between *SELECTION START* and *SELECTION END*). Your job is to provide a corrected or improved version of ONLY the selected code. Fix any bugs, issues, or improvements you can identify. If the code is already correct, return it unchanged.\n\nOutput ONLY the replacement code itself. Do not wrap it in a code block, do not use backticks, and do not include any explanation. If there is nothing to fix or improve, just output N/A.\n\nCode context ({fileName}):\n\n{beforeSelection}*SELECTION START*{selectedText}*SELECTION END*{afterSelection}",
+          "editPresentation": "multilineText",
+          "description": "Prompt template for selection replacement. Available variables: {fileName}, {beforeSelection}, {selectedText}, {afterSelection}"
+        },
+        "local-llm.imageContextPrompt": {
+          "type": "string",
+          "default": "\n\nThe above {imageCount} image(s) ({imageNames}) are additional visual context from the project. Use them to inform your code completion.",
+          "editPresentation": "multilineText",
+          "description": "Prompt appended when images are present in the context folder. Available variables: {imageCount}, {imageNames}"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "local-llm.triggerCompletion",
+        "key": "ctrl+shift+space",
+        "mac": "cmd+shift+space",
+        "when": "editorTextFocus"
+      }
+    ]
+  }
+}
