@@ -11,11 +11,26 @@ Ghost-text code completion for VS Code powered by a local LLM via any OpenAI-com
 - **Multimodal support** — image files in the context folder are sent to vision-capable models
 - **Fully local** — no data leaves your machine
 
+## Install from Release (easiest)
+
+1. Download the `.vsix` from the [Releases page](https://github.com/lilblam/local-llm-autocomplete/releases)
+2. In VS Code: `Ctrl+Shift+P` → "Install from VSIX" and pick the file
+3. Set your endpoint URL and model name in settings (search "Local LLM")
+
+## Build from Source
+
+```
+git clone https://github.com/lilblam/local-llm-autocomplete.git
+cd local-llm-autocomplete
+npm install -g @vscode/vsce
+vsce package --allow-missing-repository
+code --install-extension local-llm-autocomplete-0.0.5.vsix
+```
+
 ## Setup
 
 1. Start your local LLM server (e.g. `llama-server`) with an OpenAI-compatible chat endpoint
-2. Install this extension
-3. Open settings and configure the endpoint URL and model name if they differ from the defaults
+2. Open settings and configure the endpoint URL and model name if they differ from the defaults
 
 ## Settings
 
